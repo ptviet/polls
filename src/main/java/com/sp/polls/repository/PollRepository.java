@@ -23,7 +23,7 @@ public interface PollRepository extends JpaRepository<Poll, Long> {
 
   List<Poll> findByIdIn(List<Long> pollIds, Sort sort);
 
-  @Query("SELECT p FROM polls p WHERE LOWER(p.question) LIKE LOWER(concat(concat('%',:question), '%'))")
+  @Query("SELECT p FROM Poll p WHERE LOWER(p.question) LIKE LOWER(concat(concat('%',:question), '%'))")
   Page<Poll> findByQuestion(@Param("question") String question, Pageable pageable);
 
 }
