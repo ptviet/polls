@@ -281,4 +281,32 @@ public class PollServiceImpl implements PollService {
 
     return creatorMap;
   }
+
+  @Override
+  public PagedResponse<PollResponse> findByQuestion(UserPrincipal currentUser, String question, int page, int size) {
+
+    Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "createdAt");
+    Page<Poll> polls = pollRepository.findByQuestion(question, pageable);
+
+    if(polls.getNumberOfElements() == 0) {
+      return new PagedResponse<>(Collections.emptyList(), polls.getNumber(),
+          polls.getSize(), polls.getTotalElements(), polls.getTotalPages(), polls.isLast());
+    }
+
+    // Map Polls to PollResponses containing vote counts and poll creator details
+    List<Long> pollIds = polls.map(Poll::getId).getContent();
+    Map<Long, Long> choiceVoteCountMap = getChoiceVoteCountMap(pollIds);
+    Map<Long, Long> pollUserVoteMap = getPollUserVoteMap(currentUser, pollIds);
+    Map<Long, User> creatorMap = getPollCreatorMap(polls.getContent());
+
+    List<PollResponse> pollResponses = polls.map(poll -> {
+      return ModelMapper.mapPollToPollResponse(poll,
+          choiceVoteCountMap,
+          creatorMap.get(poll.getCreatedBy()),
+          pollUserVoteMap == null ? null : pollUserVoteMap.getOrDefault(poll.getId(), null));
+    }).getContent();
+
+    return new PagedResponse<>(pollResponses, polls.getNumber(),
+        polls.getSize(), polls.getTotalElements(), polls.getTotalPages(), polls.isLast());
+  }
 }

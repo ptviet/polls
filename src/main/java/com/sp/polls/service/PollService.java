@@ -14,5 +14,6 @@ public interface PollService {
   Poll createPoll(PollRequest pollRequest);
   Long countByCreatedBy(Long userId);
   PollResponse getPollById(Long pollId, UserPrincipal currentUser);
+  PagedResponse<PollResponse> findByQuestion(UserPrincipal currentUser, String question, int page, int size);
   PollResponse castVoteAndGetUpdatedPoll(Long pollId, VoteRequest voteRequest, UserPrincipal currentUser);
 }

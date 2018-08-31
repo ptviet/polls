@@ -63,4 +63,15 @@ public class PollController {
     return pollService.castVoteAndGetUpdatedPoll(pollId, voteRequest, currentUser);
   }
 
+  @GetMapping("/search")
+  public PagedResponse<PollResponse> searchPolls(@CurrentUser UserPrincipal currentUser,
+                                                 @RequestParam(value = "term", defaultValue = "") String question,
+                                                 @RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int page,
+                                                 @RequestParam(value = "size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int size) {
+
+    return pollService.findByQuestion(currentUser, question, page, size);
+  }
+
+
+
 }
