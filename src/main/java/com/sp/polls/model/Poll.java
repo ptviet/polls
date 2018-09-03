@@ -20,7 +20,7 @@ public class Poll extends UserDateAudit {
   private Long id;
 
   @NotBlank
-  @Size(max = 250)
+  @Size(max = 500)
   private String question;
 
   @OneToMany(

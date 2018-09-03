@@ -13,7 +13,7 @@ public class Choice {
   private Long id;
 
   @NotBlank
-  @Size(max = 40)
+  @Size(max = 60)
   private String text;
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
